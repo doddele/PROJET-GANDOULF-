@@ -1,0 +1,3 @@
+armure;Tunique rudimentaire;3;30;
+armure;Tunique d'aventurier;10;100;
+arme;Epée en acier;50;1000;

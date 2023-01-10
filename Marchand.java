@@ -1,6 +1,6 @@
 public interface Marchand {
-    public void acheterPotions();
+    public void acheterPotions(Personnage joueur);
     public void vendrePotions();
-    public void acheterEquipement();
+    public void acheterEquipement(Personnage joueur);
     public void vendreEquipement();
 }

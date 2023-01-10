@@ -1,12 +1,11 @@
+import org.w3c.dom.ls.LSOutput;
+
 import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.io.*;
+import java.nio.Buffer;
+import java.nio.file.*;
+import java.util.*;
+import java.lang.Math;
 
 public class Main {
 
@@ -38,10 +37,10 @@ public class Main {
                 // Crée une arme ou une armure en fonction des données.
                 if (Objects.equals(equipementSplit[0], "arme")) {
                     Arme test = new Arme(a, b, c, d);
-                    System.out.println("type:" + a + " nom:" + b + " attaque:" + c + " prix:" + d);
+                    System.out.println("type:" + a + "\tnom:" + b + "\tattaque:" + c + "\tprix:" + d);
                 } else {
                     Armure test2 = new Armure(a, b, c, d);
-                    System.out.println("type:" + a + " nom:" + b + " defense:" + c + " prix:" + d);
+                    System.out.println("type:" + a + "\tnom:" + b + "\tdefense:" + c + "\tprix:" + d);
                 }
             }
 
@@ -52,11 +51,99 @@ public class Main {
         }
     }
 
-    /**
-     * Lecture des personnages
-     */
-    static void lecturePersonnage() {
-        System.out.println("lecture perso");
+    static void resetMarchand() {
+
+        // Ajout de 3 items aléatoires dans le fichier équipement temporaire.
+        try {
+
+            // Fichier d'entrée.
+            File inputFile = new File("/home/jules/Desktop/PROJET GANDOULF/Ressources/equipements.txt");
+
+            // Fichier temporaire.
+            File tempFileMarchand = new File("tempFileMarchand.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFileMarchand));
+
+            String typeArme;
+            String currentLine;
+
+            int compteur = 1;
+            int tailleEquip = 8;
+
+            // Tire trois nombres aléatoires.
+            Random random = new Random();
+            int nb1 = random.nextInt(8);
+            int nb2 = random.nextInt(8);
+            int nb3 = random.nextInt(8);
+
+            // Sort de la boucle seulement si les trois nombres sont différents.
+            while (true) {
+                if (nb1 == nb2) {
+                    nb2 = random.nextInt(8);
+                }
+                if (nb1 == 0) {
+                    nb2 = random.nextInt(8);
+                }
+                if (nb2 == 0) {
+                    nb2 = random.nextInt(8);
+                }
+                if (nb3 == nb1) {
+                    nb3 = random.nextInt(8);
+                }
+                if (nb3 == nb2) {
+                    nb3 = random.nextInt(8);
+                }
+                if (nb3 == 0) {
+                    nb3 = random.nextInt(8);
+                }
+                if (nb1 != nb2) {
+                    if (nb1 != nb3) {
+                        if (nb1 != 0) {
+                            if (nb2 != 0) {
+                                if (nb3 != 0) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Copie du fichier équipement dans le fichier marchand temporaire.
+            while ((currentLine = reader.readLine()) != null) {  // Continue tant qu'il y a des lignes.
+
+                String trimmedLine = currentLine.trim();
+
+                // Split la ligne selon les ";" et la stocke dans la variable "a".
+                String[] a = trimmedLine.split(";");
+
+                if (nb1 == compteur) {
+                    // Si le numéro de la ligne est égal au numéro aléatoire, enregistre
+                    // les données de l'item dans une nouvelle ligne.
+                    writer.write(currentLine + System.getProperty("line.separator"));
+                }
+
+                if (nb2 == compteur) {
+                    // Si le numéro de la ligne est égal au numéro aléatoire, enregistre
+                    // les données de l'item dans une nouvelle ligne.
+                    writer.write(currentLine + System.getProperty("line.separator"));
+                }
+
+                if (nb3 == compteur) {
+                    // Si le numéro de la ligne est égal au numéro aléatoire, enregistre
+                    // les données de l'item dans une nouvelle ligne.
+                    writer.write(currentLine + System.getProperty("line.separator"));
+                }
+
+                compteur += 1;
+            }
+
+            writer.close();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -67,7 +154,6 @@ public class Main {
 
         String nom = null;
         Personnage joueur = new Personnage(nom);
-        // TODO: Sorcier joueur = new Sorcier(nom);
         Boolean gameRun = true;
 
 
@@ -90,19 +176,25 @@ public class Main {
                         // Fais passer le joueur de Personnage à Barbare.
                         joueur = new Barbare(nom);
 
-                        // Création d'un personnage barbare.
-                        joueur.creerBarbare();
-
+                        // Permet d'entrer un nom.
+                        joueur.creerPerso();
+                        joueur.save();
                         break loop;
-                    case 1:     // Création Sorcier.
 
-                        System.out.println("creation sorcier");
-                        break;
+                    case 1:     // Création Sorcier.
+                        // Fait passer le joueur de Personnage à Sorcier.
+                        joueur = new Sorcier(nom);
+
+                        // Permet d'entrer un nom.
+                        joueur.creerPerso();
+                        joueur.save();
+                        break loop;
                 }
-            case 1:     // Charger un personnage prééxistant.
+            case 1:     // Charger un personnage préexistant.
 
                 int choixPersoMenu = 0;
                 try {
+
                     // Fichier d'entrée.
                     FileInputStream personnages = new FileInputStream(
                             "/home/jules/Desktop/PROJET GANDOULF/Ressources/personnages.txt");
@@ -168,7 +260,7 @@ public class Main {
                     scanner.close();
 
                     // Choisi le constructeur du personnage en fonction de la classe.
-                    switch (statPersoSplit[1]) {          // StatPersoSplit[1] correspond à la classe.
+                    switch (statPersoSplit[1]) {        // StatPersoSplit[1] correspond à la classe.
                         case "Barbare":
                             nom = statPersoSplit[0];
 
@@ -190,8 +282,25 @@ public class Main {
                                     Integer.parseInt(statPersoSplit[15]));  // nbPotions
                             break;
                         case "Sorcier":
-                            // TODO: création sorcier.
-                            //joueur.lectureSorcier();
+                            nom = statPersoSplit[0];
+
+                            // Instancie un Barbare avec les statistiques du fichier txt.
+                            joueur = new Sorcier(nom,                       // nom
+                                    Integer.parseInt(statPersoSplit[2]),    // niveau
+                                    Integer.parseInt(statPersoSplit[3]),    // XP
+                                    Integer.parseInt(statPersoSplit[4]),    // HPmax
+                                    Integer.parseInt(statPersoSplit[5]),    // HP
+                                    Integer.parseInt(statPersoSplit[6]),    // mana
+                                    Integer.parseInt(statPersoSplit[7]),    // manaMax
+                                    Integer.parseInt(statPersoSplit[8]),    // attaque
+                                    Integer.parseInt(statPersoSplit[9]),    // defense
+                                    Integer.parseInt(statPersoSplit[10]),   // esquive
+                                    Integer.parseInt(statPersoSplit[11]),   // vitesse
+                                    statPersoSplit[12],                     // arme
+                                    statPersoSplit[13],                     // armure
+                                    Integer.parseInt(statPersoSplit[14]),   // or
+                                    Integer.parseInt(statPersoSplit[15]),   // nbPotions
+                                    statPersoSplit[16]);                    // sorts
                             break;
                     }
                 } catch (IOException e) {
@@ -207,70 +316,153 @@ public class Main {
                     joueur.nom + " - " + joueur.classe + " niveau: " + joueur.level,
                     JOptionPane.DEFAULT_OPTION, -1, null, menuOptions,
                     menuOptions[0]);
-            switch (menu) {
-                case 0:
-                    // Combat de monstre.
-                    break;
-                case 1:
-                    // Arène.
-                    break;
-                case 2:
-                    // Combat entre joueurs.
-                    break;
-                case 3:
 
-                    // Marchand.
+            // Affichage du menu principal du jeu.
+            switch (menu) {
+
+
+                case 0:     // Combat de monstre.
+
+                    // TODO: Combat de monstre (méthode dans main à appeler ? ou coder ici directement)
+                    resetMarchand();    // A placer après le combat pour avoir un loot différent chez le marchand après chaque combat.
+                    break;
+
+
+                case 1:     // Arène.
+
+                    // TODO: Combat en arène
+                    //resetMarchand();
+                    break;
+
+
+                case 2:     // Combat entre joueurs.
+
+                    // TODO: Combat JvJ
+                    //resetMarchand();
+                    break;
+
+
+                case 3:     // Marchand.
+
+                    // Affichage du marchand.
                     String[] marchandOptions = {"Equipements", "Potions", "Vendre"};
                     int marchand = JOptionPane.showOptionDialog(null,
                             "Vous avez " + joueur.or + " pièces d'or." +
-                                    "\nArme: " + joueur.arme + "\nArmure: " + joueur.armure + "\nNombre de potions: " +
+                                    "\n\nArme: " + joueur.arme + "\nArmure: " + joueur.armure + "\nNombre de potions: " +
                                     joueur.nbPotions + "\n\nQue voulez-vous acheter ?", "Marchand",
                             JOptionPane.DEFAULT_OPTION, -1, null, marchandOptions,
                             marchandOptions[0]);
 
                     switch (marchand) {
-                        case 0:     // Equipements.
+                        case 0:     // Achat d'équipement.
+
+                            /* TODO: Achat d'équipement -> switch arme/armure dans main, stocker les 3 équipements
+                                aléatoires dans fichier temporaire où ils seront lus par le marchand
+                             */
+
+                            // Lecture fichier et affichage dans marchand
+
+                            int choixEquiptMenu;
+
+                            try {
+                                // Fichier d'entrée.
+                                FileInputStream equiptAVendre = new FileInputStream(
+                                        "/home/jules/Desktop/PROJET GANDOULF/tempFileMarchand.txt");
+                                Scanner scanner = new Scanner(equiptAVendre);
+
+                                // Liste qui va contenir les équipements disponibles.
+                                List<String> listeNomsEquipt = new ArrayList<>();
+                                List<String> listeStatEquipt = new ArrayList<>();
+                                String[] equiptSplit = {};
+
+
+                                // Renvoie true s'il y a une autre ligne à lire.
+                                while (scanner.hasNextLine()) {
+
+                                    // Prend une ligne du fichier texte à la fois et stocke la ligne dans "persoDispo".
+                                    String equiptDispo = scanner.nextLine();
+
+                                    // Sépare les données de chaque perso et les stocke dans une liste.
+                                    equiptSplit = equiptDispo.split(";");
+
+
+                                    if (Objects.equals(equiptSplit[0], "armure")) {
+                                        // Ajoute le nom, la classe et le niveau du personnage dans l'arraylist "listeNomPersos".
+                                        listeNomsEquipt.add(equiptSplit[1] + ", DEF +" + equiptSplit[2] + ", "
+                                                + equiptSplit[3] + " pièces d'or.");
+                                    } else {
+                                        listeNomsEquipt.add(equiptSplit[1] + ", " + "ATK +" + equiptSplit[2] + ", "
+                                                + equiptSplit[3] + " pièces d'or");
+                                    }
+                                }
+
+                                // Transforme les arraylist en array.
+                                String[] optionEquiptPerso = listeNomsEquipt.toArray(new String[0]);
+
+                                choixEquiptMenu = JOptionPane.showOptionDialog(null,
+                                        "Vous avez " + joueur.or + " pièces d'or."
+                                                + "\n\nQue voulez-vous acheter ?",
+                                        "Marchand", JOptionPane.DEFAULT_OPTION, -1,
+                                        null, optionEquiptPerso, optionEquiptPerso[0]);
+
+                                //switch (choixEquiptMenu) {}
+                                scanner.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // TODO: Equipement.acheterEquipement();
+
                             break;
 
-                        case 1:     // Potions.
+                        case 1:     // Achat de potions.
                             if (joueur.level < 10) {    // si niveau joueur <10, permet d'acheter une potion niveau 1.
-                                Potion potion = new Potion(2, 100, 150);
-                                potion.acheterPotions();
-                            }
-
-                            if(joueur.level < 20){
-                                Potion potion = new Potion(2, 100, 150);
-
-                                int nbPotionsAchetes = Integer.parseInt(JOptionPane.showInputDialog(f,
-                                        "Vous avez " + joueur.or + " pièces d'or." +
-                                                "\nCombien voulez-vous acheter de potions de niveau " + potion.niveau + " ?"
-                                                + "\n\nPrix: " + potion.prix
-                                                + "\nPV rendus: " + potion.soinPV));
-                                if (joueur.or >= potion.prix * nbPotionsAchetes) {
-                                    joueur.setOr(joueur.or - potion.prix * nbPotionsAchetes);
-                                    joueur.setNbPotions(joueur.nbPotions + nbPotionsAchetes);
-                                } else {
-                                    JOptionPane.showMessageDialog(f, "Vous n'avez pas assez d'argent pour acheter cet article!",
-                                            "Marchand", -1);
-                                }
+                                Potion potion = new Potion(1, 50, 100);
+                                potion.acheterPotions(joueur); // On appelle la méthode "acheterPotions" de la classe Potion.
                                 break;
                             }
-
-                            if(joueur.level < 30){
+                            if (joueur.level < 20) {
+                                Potion potion = new Potion(2, 100, 150);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 30) {
                                 Potion potion = new Potion(3, 150, 250);
-
-                                int nbPotionsAchetes = Integer.parseInt(JOptionPane.showInputDialog(f,
-                                        "Vous avez " + joueur.or + " pièces d'or." +
-                                                "\nCombien voulez-vous acheter de potions de niveau " + potion.niveau + " ?"
-                                                + "\n\nPrix: " + potion.prix
-                                                + "\nPV rendus: " + potion.soinPV));
-                                if (joueur.or >= potion.prix * nbPotionsAchetes) {
-                                    joueur.setOr(joueur.or - potion.prix * nbPotionsAchetes);
-                                    joueur.setNbPotions(joueur.nbPotions + nbPotionsAchetes);
-                                } else {
-                                    JOptionPane.showMessageDialog(f, "Vous n'avez pas assez d'argent pour acheter cet article!",
-                                            "Marchand", -1);
-                                }
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 40) {
+                                Potion potion = new Potion(4, 200, 350);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 50) {
+                                Potion potion = new Potion(5, 250, 400);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 60) {
+                                Potion potion = new Potion(6, 300, 550);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 70) {
+                                Potion potion = new Potion(7, 350, 650);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 80) {
+                                Potion potion = new Potion(8, 400, 750);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 90) {
+                                Potion potion = new Potion(9, 450, 850);
+                                potion.acheterPotions(joueur);
+                                break;
+                            }
+                            if (joueur.level < 100) {
+                                Potion potion = new Potion(10, 500, 1000);
+                                potion.acheterPotions(joueur);
                                 break;
                             }
                             break;
@@ -279,13 +471,42 @@ public class Main {
                             break;
                     }
                     break;
-                case 4:
 
-                    // Sauvegarde.
-                    // TODO: Sauvegarder sur ligne où le perso est déjà enregistré.
-                    joueur.save();
-                    JOptionPane.showMessageDialog(f, "Partie sauvegardée!");
-                    break;
+
+                case 4:     // Sauvegarde.
+                    try {
+
+                        // Fichier d'entrée.
+                        File inputFile = new File("/home/jules/Desktop/PROJET GANDOULF/Ressources/personnages.txt");
+
+                        // Fichier temporaire.
+                        File tempFilePerso = new File("tempFilePerso.txt");
+
+                        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFilePerso));
+
+                        String lineToRemove = nom;
+                        String currentLine;
+
+                        while ((currentLine = reader.readLine()) != null) {  // Continue tant qu'il y a des lignes.
+                            String trimmedLine = currentLine.trim();
+
+                            // Split la ligne selon les ";" et la stocke dans la variable "a".
+                            String[] a = trimmedLine.split(";");
+
+                            // Si le premier item de "a" correspond au nom du joueur, supprime la ligne et enregistre
+                            // les données du personnage dans une noubvelle ligne.
+                            if (a[0].equals(lineToRemove)) continue;
+                            writer.write(currentLine + System.getProperty("line.separator"));
+                            writer.write((joueur.getStat()));
+                        }
+                        writer.close();
+                        reader.close();
+                        JOptionPane.showMessageDialog(f, "Partie sauvegardée!");
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
             }
 
         }

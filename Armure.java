@@ -1,3 +1,4 @@
+import java.lang.Math;
 public class Armure extends Equipement {
     private String typeEquipement;
     private int defenseArme;

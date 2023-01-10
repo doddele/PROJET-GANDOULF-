@@ -9,10 +9,10 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Potion implements Marchand {
-    String nom = "Potion";
-    int niveau;
-    int prix;
-    int soinPV;
+    public String nom = "Potion";
+    public int niveau;
+    public int prix;
+    public int soinPV;
     public Potion(int niveau, int prix, int soinPV){
         this.niveau = niveau;
         this.prix = prix;
@@ -20,16 +20,16 @@ public class Potion implements Marchand {
     }
 
     @Override
-    public void acheterPotions() {
+    public void acheterPotions(Personnage joueur) {
+
         JFrame f = new JFrame();
-        Personnage joueur;
         int or = joueur.getOr();
         int nbPotionsAchetes = Integer.parseInt(JOptionPane.showInputDialog(f,
                 "Vous avez " + joueur.or + " pièces d'or." +
                         "\nCombien voulez-vous acheter de potions de niveau " + this.niveau + " ?"
                         + "\n\nPrix: " + this.prix
                         + "\nPV rendus: " + this.soinPV));
-        if (joueur.or >= this.prix * nbPotionsAchetes) {
+        if (joueur.or >= this.prix * nbPotionsAchetes) {    // Vérifie que le joueur possède assez d'or pour acheter la potion.
             joueur.setOr(joueur.or - this.prix * nbPotionsAchetes);
             joueur.setNbPotions(joueur.nbPotions + nbPotionsAchetes);
         } else {
@@ -44,7 +44,7 @@ public class Potion implements Marchand {
     }
 
     @Override
-    public void acheterEquipement() {
+    public void acheterEquipement(Personnage joueur) {
 
     }
 
