@@ -7,9 +7,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Barbare extends Personnage {
-    private String arme2;
-    private int attaque;
-    private double critique;
     public Barbare(String nom) {
         super(nom);
         this.arme2 = "vide";
@@ -54,10 +51,10 @@ public class Barbare extends Personnage {
     public void save() {
         try {
             // Ecrit les statistiques du personnage dans une nouvelle ligne du fichier
-            File fichierPerso = new File("/home/jules/Desktop/PROJET GANDOULF/Ressources/personnages.txt");
             FileWriter myWriter = new FileWriter(
                     "/home/jules/Desktop/PROJET GANDOULF/Ressources/personnages.txt", true);
             System.out.println(nom);
+            System.out.println(this.arme);
             myWriter.write(this.nom + ";" + this.classe + ";" + this.level + ";" + this.XP + ";" + this.HPmax
                     + ";" + this.HP + ";" + this.attaque + ";" + this.defense + ";" + this.esquive + ";"
                     + this.critique + ";" + this.vitesse + ";" + this.arme + ";" + this.arme2 + ";" + this.armure
@@ -68,6 +65,7 @@ public class Barbare extends Personnage {
             e.printStackTrace();
         }
     }
+
 
     // TODO: méthode gainXP(int expGagnée)
 

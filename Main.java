@@ -8,7 +8,6 @@ import java.util.*;
 import java.lang.Math;
 
 public class Main {
-
     /**
      * Lecture de l'équipement.
      */
@@ -34,6 +33,7 @@ public class Main {
                 int c = Integer.parseInt(equipementSplit[2]);
                 int d = Integer.parseInt(equipementSplit[3]);
 
+                /*
                 // Crée une arme ou une armure en fonction des données.
                 if (Objects.equals(equipementSplit[0], "arme")) {
                     Arme test = new Arme(a, b, c, d);
@@ -42,6 +42,9 @@ public class Main {
                     Armure test2 = new Armure(a, b, c, d);
                     System.out.println("type:" + a + "\tnom:" + b + "\tdefense:" + c + "\tprix:" + d);
                 }
+
+
+                 */
             }
 
             // Ferme le scanner.
@@ -152,9 +155,10 @@ public class Main {
     static void gameRun() {
         JFrame f = new JFrame();
 
-        String nom = null;
+        String nom = "";
         Personnage joueur = new Personnage(nom);
         Boolean gameRun = true;
+        int var = 0;
 
 
         String[] introOptions = {"Créer un nouveau personnage", "Charger un personnage pré-existant"};
@@ -280,6 +284,15 @@ public class Main {
                                     statPersoSplit[13],                     // armure
                                     Integer.parseInt(statPersoSplit[14]),   // or
                                     Integer.parseInt(statPersoSplit[15]));  // nbPotions
+                            System.out.println("nom:" + joueur.nom +
+                                    " niveau:" + joueur.level +
+                                    " XP:" + joueur.XP +
+                                    " HPmax:" + joueur.HPmax +
+                                    " HP:" + joueur.HP +
+                                    " attaque:" + joueur.attaque +
+                                    " defense:" + joueur.defense +
+                                    " critique:" + joueur.critique);
+                            var = Integer.parseInt(statPersoSplit[6]);
                             break;
                         case "Sorcier":
                             nom = statPersoSplit[0];
@@ -322,53 +335,73 @@ public class Main {
 
 
                 case 0:     // Combat de monstre.
-                    if(joueur.vitesse < monstre.Vitesse){
-                        joueur.HP = joueur.HP-(monstre.Attaque-joueur.Defense)
+
+
+                    System.out.println(joueur.attaque);
+                    System.out.println(joueur.classe);
+                    System.out.println(joueur.mana);
+                    System.out.println(var);
+
+                    // Instanciation du monstre.
+                    Monstre monstre = new Monstre("Zeph", 100, 1, 1, 1, 1, 100, 1, 1);
+                    JOptionPane.showMessageDialog(null,
+                            "Un " + monstre.nomMonstre + " sauvage apparait !", "Combat", -1);
+
+                    if (joueur.vitesse < monstre.vitesse) { // Détermine qui du joueur ou du monstre va attaquer le premier.
+                        joueur.HP = joueur.HP - (monstre.attaque - joueur.defense);
                     }
                     int nbtours = 0;
-                        do{
-                            String[] menuCombatdemonstre = {"Attaquer", "Potion","Lancer un sort"};
-                            int Combat = JOptionPane.showOptionDialog(null, "Quelle action souhaitez-vous effectuer ?","Combat",JOptionPane.DEFAULT_OPTION,-1, null, menuCombatdemonstre,
-                                    menuCombatdemonstre[0]);)
-                            switch(Combat) {
-                                case 0:
-                                    monstre.PVMonstre = monstre.PVMonstre - (joueur.attaque - monstre.Defense);
-                                    if (monstre.PVMonstre < 0) {
-                                        monstre.PVMonstre = 0;
-                                        System.out.println("Bravo ! Vous avez triomphé de votre adversaire !");
-                                    }
-                                    nbtours += 1;
-                                    break;
-                                case 1:
-                                    if (joueur.nbPotions > 0) {
-                                        joueur.HP = joueur.HP + potion.soinPV;
-                                        joueur.nbPotions -= 1;
+                    do {
+                        String[] menuCombatdemonstre = {"Attaquer", "Potion", "Lancer un sort"};
+                        int combat = JOptionPane.showOptionDialog(null,
+                                "Quelle action souhaitez-vous effectuer ?", joueur.nom + " HP: " + joueur.HP + "/" +
+                                        joueur.HPmax +  "  -  " + monstre.nomMonstre + " HP: " + monstre.PVMonstre,
+                                JOptionPane.DEFAULT_OPTION, -1, null, menuCombatdemonstre,
+                                menuCombatdemonstre[0]);
+                        switch (combat) {
+                            case 0:     // Attaquer.
+                                monstre.PVMonstre = monstre.PVMonstre - (joueur.attaque - monstre.defense);
+                                if (monstre.PVMonstre < 0) {
+                                    monstre.PVMonstre = 0;
+                                    System.out.println("Bravo ! Vous avez triomphé de votre adversaire !");
+                                }
+                                nbtours += 1;
+                                break;
+                            case 1:     // Potion.
+                                if (joueur.nbPotions > 0) {
+                                    Potion potion = new Potion(1, 1, 1);
+                                    Potion.getPotion(joueur);
+                                    joueur.HP = joueur.HP + potion.soinPV;
+                                    joueur.nbPotions -= 1;
+                                } else {
+                                    System.out.println("Vous n'avez pas de potions.");
+                                }
+                                nbtours += 1;
+                                break;
+                            case 2:     // Lancer un sort.
+                                if (Objects.equals(joueur.classe,"Sorcier")) {       // TODO: instancier joueur.mana
+                                    if (nbtours == 0) {
+                                        monstre.PVMonstre = monstre.PVMonstre - (15 - monstre.defense);
+                                        joueur.mana -= 10;
                                     } else {
-                                        System.out.println("Vous n'avez pas de potions.")
+                                        if (joueur.mana >= 5) {
+                                            monstre.PVMonstre = monstre.PVMonstre - (5 - monstre.defense);
+                                            joueur.mana -= 5;
+                                        } else {
+                                            monstre.PVMonstre = (int) (monstre.PVMonstre - ((5 * 0.90) - monstre.defense));
+                                        }
                                     }
                                     nbtours += 1;
                                     break;
-                                case 2:
-                                    if (joueur.classe == "Sorcier") {
-                                        if (nbtours == 0) {
-                                            monstre.PVMonstre = monstre.PVMonstre - (15 - monstre.Defense);
-                                            Sorcier.mana -= 10;
-                                        } else {
-                                            if (joueur.mana >= 5) {
-                                                monstre.PVMonstre = monstre.PVMonstre - (5 - monstre.Defense);
-                                                Sorcier.mana -= 5;
-                                            } else{
-                                                monstre.PVMonstre = monstre.PVMonstre - (5*0.90 - monstre.Defense);
-                                            }
-                                        }
-                                        nbtours += 1;
-                                        break;
-                                    }
-                            }
+                                } else {
+                                    System.out.println("Pas de sort disponible.");
+                                }
+                                break;
                         }
-                    while (joueur.HP>0 && monstre.PVMonstre>0);
+                    }
+                    while (joueur.HP > 0 && monstre.PVMonstre > 0);
 
-                    // TODO: Combat de monstre (méthode dans main à appeler ? ou coder ici directement)
+
                     resetMarchand();    // A placer après le combat pour avoir un loot différent chez le marchand après chaque combat.
                     break;
 
@@ -393,7 +426,7 @@ public class Main {
                     String[] marchandOptions = {"Equipements", "Potions", "Vendre"};
                     int marchand = JOptionPane.showOptionDialog(null,
                             "Vous avez " + joueur.or + " pièces d'or." +
-                                    "\n\nArme: " + joueur.arme + "\nArmure: " + joueur.armure + "\nNombre de potions: " +
+                                    "\n\nArme: " + joueur.arme + "\nDeuxième arme: " + joueur.arme2 + "\nArmure: " + joueur.armure + "\nNombre de potions: " +
                                     joueur.nbPotions + "\n\nQue voulez-vous acheter ?", "Marchand",
                             JOptionPane.DEFAULT_OPTION, -1, null, marchandOptions,
                             marchandOptions[0]);
@@ -440,6 +473,7 @@ public class Main {
                                                 + equiptSplit[3] + " pièces d'or");
                                     }
                                 }
+                                scanner.close();
 
                                 // Transforme les arraylist en array.
                                 String[] optionEquiptPerso = listeNomsEquipt.toArray(new String[0]);
@@ -450,8 +484,16 @@ public class Main {
                                         "Marchand", JOptionPane.DEFAULT_OPTION, -1,
                                         null, optionEquiptPerso, optionEquiptPerso[0]);
 
-                                //switch (choixEquiptMenu) {}
-                                scanner.close();
+                                System.out.println(equiptSplit[0]);
+
+                                switch (choixEquiptMenu) {
+                                    default:     // Permet d'acheter une arme choisie..
+                                        if(Objects.equals(equiptSplit[0], "arme")){
+                                            Arme arme = new Arme(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                            arme.acheterArme(joueur);
+                                        }
+                                        break;
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -460,56 +502,7 @@ public class Main {
                             break;
 
                         case 1:     // Achat de potions.
-                            if (joueur.level < 10) {    // si niveau joueur <10, permet d'acheter une potion niveau 1.
-                                Potion potion = new Potion(1, 50, 100);
-                                potion.acheterPotions(joueur); // On appelle la méthode "acheterPotions" de la classe Potion.
-                                break;
-                            }
-                            if (joueur.level < 20) {
-                                Potion potion = new Potion(2, 100, 150);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 30) {
-                                Potion potion = new Potion(3, 150, 250);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 40) {
-                                Potion potion = new Potion(4, 200, 350);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 50) {
-                                Potion potion = new Potion(5, 250, 400);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 60) {
-                                Potion potion = new Potion(6, 300, 550);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 70) {
-                                Potion potion = new Potion(7, 350, 650);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 80) {
-                                Potion potion = new Potion(8, 400, 750);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 90) {
-                                Potion potion = new Potion(9, 450, 850);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
-                            if (joueur.level < 100) {
-                                Potion potion = new Potion(10, 500, 1000);
-                                potion.acheterPotions(joueur);
-                                break;
-                            }
+                            Potion.acheterPotion(joueur);
                             break;
 
                         case 2:     // Vendre de l'équipement ou des potions.
@@ -525,7 +518,7 @@ public class Main {
                         File inputFile = new File("/home/jules/Desktop/PROJET GANDOULF/Ressources/personnages.txt");
 
                         // Fichier temporaire.
-                        File tempFilePerso = new File("tempFilePerso.txt");
+                        File tempFilePerso = new File("/home/jules/Desktop/PROJET GANDOULF/Ressources/tempFilePerso.txt");
 
                         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
                         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFilePerso));
@@ -540,14 +533,16 @@ public class Main {
                             String[] a = trimmedLine.split(";");
 
                             // Si le premier item de "a" correspond au nom du joueur, supprime la ligne et enregistre
-                            // les données du personnage dans une noubvelle ligne.
+                            // les données du personnage dans une nouvelle ligne.
                             if (a[0].equals(lineToRemove)) continue;
                             writer.write(currentLine + System.getProperty("line.separator"));
                             writer.write((joueur.getStat()));
                         }
                         writer.close();
                         reader.close();
-                        JOptionPane.showMessageDialog(f, "Partie sauvegardée!");
+
+
+
 
                     } catch (IOException e) {
                         e.printStackTrace();

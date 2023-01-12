@@ -16,13 +16,17 @@ public class Personnage {
     protected int esquive;
     protected int vitesse;
     protected String arme;
+    protected String arme2;
     protected String armure;
     protected int or;
     protected int nbPotions;
+    protected int mana;
+    protected int attaque;
+    protected double critique;
 
     public Personnage(String nom) {
         this.nom = nom;
-        this.level = 0;
+        this.level = 1;
         this.XP = 0;
         this.defense = 0;
         this.HP = 100;
@@ -34,6 +38,9 @@ public class Personnage {
         this.armure = "vide";
         this.or = 50;
         this.nbPotions = 0;
+        this.mana = 0;
+        this.attaque = 0;
+        this.arme2 = "vide";
     }
 
     public void setNom(String nom) {
@@ -58,10 +65,13 @@ public class Personnage {
 
         this.nbPotions = x;
     }
-    public String setArme(String arme){
+    public void setArme(String arme){
 
         this.arme = arme;
-        return arme;
+    }
+    public void setArme2(String arme2){
+
+        this.arme2 = arme2;
     }
     public void rename(String newNom) {
         this.nom = newNom;
@@ -119,12 +129,4 @@ public class Personnage {
         }
     }
     public void save() {}
-    public void death() {
-        if (this.HP <= 0) {
-            JFrame g;
-            g = new JFrame();
-            //System.out.println(this.nom + " est mort!");
-            JOptionPane.showMessageDialog(g, this.nom + " est mort.", this.nom + " : " + this.HP + "PV", -1);
-        }
-    }
 }

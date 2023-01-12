@@ -15,6 +15,7 @@ public class Equipement implements Marchand{
         this.prix = prix;
     }
 
+
     @Override
     public void acheterPotions(Personnage joueur) {
 
