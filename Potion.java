@@ -142,4 +142,6 @@ public class Potion implements Marchand {
     public void vendreEquipement() {
 
     }
+    public void acheterArme(Personnage joueur){};
+    public void acheterArmure(Personnage joueur){};
 }

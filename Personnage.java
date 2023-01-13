@@ -73,6 +73,12 @@ public class Personnage {
 
         this.arme2 = arme2;
     }
+    public void setArmure(String armure){
+        this.armure = armure;
+    }
+    public void soinHP(){
+        this.HP = HPmax;
+    }
     public void rename(String newNom) {
         this.nom = newNom;
     }
@@ -128,5 +134,19 @@ public class Personnage {
             }
         }
     }
+    public void setXP(int XP){
+        this.XP = XP;
+    }
+    public void checkXP() {
+        if(this.XP >= seuilXP){
+            gainNiveau();
+            this.seuilXP = (this.level * 100) + ((this.level - 2) * 100) + ((this.level - 1) * 100);
+            System.out.println("seuil XP:" +this.seuilXP);
+        }
+    }
+    public void setDefense(int defense){
+        this.defense = defense;
+    }
     public void save() {}
+    public void gainNiveau() {}
 }

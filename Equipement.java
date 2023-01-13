@@ -9,10 +9,17 @@ import java.lang.Math;
 public class Equipement implements Marchand{
     protected String nom;
     protected int prix;
+    protected String typeEquipement;
+    protected int attaqueArme;
+    protected int defenseArme;
 
     public Equipement(String nom, int prix) {
         this.nom = nom;
         this.prix = prix;
+    }
+    public Equipement(){
+        this.nom = "";
+        this.prix = 0;
     }
 
 
@@ -34,4 +41,6 @@ public class Equipement implements Marchand{
     public void vendreEquipement() {
 
     }
+    public void acheterArmure(Personnage joueur){};
+    public void acheterArme(Personnage joueur){};
 }

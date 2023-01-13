@@ -2,11 +2,9 @@ import javax.swing.*;
 import java.lang.Math;
 import java.util.Objects;
 public class Arme extends Equipement implements Marchand{
-    private String typeEquipement;
-    private int attaqueArme;
     public Arme (int attaqueArme, String nom, int prix ) {
         super(nom, prix);
-        this.typeEquipement = "Arme";
+        this.typeEquipement = "arme";
         this.attaqueArme = attaqueArme;
     }
     @Override
@@ -27,6 +25,7 @@ public class Arme extends Equipement implements Marchand{
     public void vendreEquipement() {
 
     }
+    @Override
     public void acheterArme(Personnage joueur){
         int or = joueur.getOr();
         if(joueur.or > this.prix){
@@ -42,16 +41,19 @@ public class Arme extends Equipement implements Marchand{
                     case 0:
                         joueur.setArme(this.nom);
                         JOptionPane.showMessageDialog(null, "Vous avez acheté l'arme " + this.nom + ".");
+                        Arme arme1 = new Arme(this.attaqueArme, this.nom, this.prix);
                         break;
                     case 1:
                         joueur.setArme2(this.nom);
                         JOptionPane.showMessageDialog(null, "Vous avez acheté l'arme " + this.nom + ".");
+                        Arme arme2 = new Arme(this.attaqueArme, this.nom, this.prix);
                         break;
                 }
             }
             else{
                 joueur.setArme(this.nom);
                 JOptionPane.showMessageDialog(null, "Vous avez acheté l'arme " + this.nom + ".");
+                Arme arme1 = new Arme(this.attaqueArme, this.nom, this.prix);
             }
         }
         else{

@@ -65,9 +65,15 @@ public class Barbare extends Personnage {
             e.printStackTrace();
         }
     }
-
-
-    // TODO: méthode gainXP(int expGagnée)
-
-    // TODO: méthode gainNiveau
+    @Override
+    public void gainNiveau() {
+        JOptionPane.showMessageDialog(null, this.nom + " passe du niveau " + this.level + " au niveau " + (this.level+1) + " !\n" +
+                "\nHP: " + this.HPmax + " -> " + (this.HPmax + 20) +
+                "\nVIT: " + this.vitesse + " -> " + (this.vitesse + 5));
+        this.level += 1;
+        this.HPmax += 20;
+        this.HP = this.HPmax;
+        this.vitesse += 5;
+        this.critique += 0.5;
+    }
 }

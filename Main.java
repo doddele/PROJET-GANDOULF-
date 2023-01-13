@@ -1,13 +1,83 @@
 import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
+import javax.swing.ImageIcon;
 import java.io.*;
 import java.nio.Buffer;
 import java.nio.file.*;
 import java.util.*;
 import java.lang.Math;
+import java.nio.file.Files;
 
 public class Main {
+    private static void randomMonstre(){
+        Monstre monstre = new Monstre();
+
+        try {
+            //fichier decrivant les monstres
+            //faire un tirage aléatoire sur le monstre rencontré
+            String chemin = "/home/jules/Desktop/PROJET GANDOULF/Ressources/monstres.txt";
+            FileInputStream file = new FileInputStream(chemin);
+            Scanner scanner = new Scanner(file);
+            Random random = new Random();
+            int nb;
+            nb = random.nextInt(14);
+            String line = "";
+            // ligne du monstre et scinder ses différentes cara qui sont séparées par des points virgules)
+            int compteur = 0;
+            //TODO faire une boucle qui fait que si le niveau du monstre est supérieur de 3 niveaux à celui du joueur, alors on relance un tirage aléatoire
+            while (compteur <= nb) {
+                line = scanner.nextLine();
+                compteur++;
+                System.out.println(line);
+            }
+            scanner.close();
+
+            String[] info = line.split(";");
+            System.out.println(info);
+            System.out.println("Attention ! Un " + info[0] + " ! Attention à ses attaques dévastatrices !");
+
+            monstre = new Monstre(
+                    info[0],                        // nom
+                    Integer.parseInt(info[1]),      // PV
+                    Integer.parseInt(info[2]),      // attaque
+                    Integer.parseInt(info[3]),      // defense
+                    Integer.parseInt(info[4]),      // niveau
+                    Integer.parseInt(info[5]),      // XP
+                    Integer.parseInt(info[6]),      // PV
+                    Integer.parseInt(info[7]),      // esquive
+                    Integer.parseInt(info[8]));     // vitesse
+            //on appelle le monstre correspondant à la ligne et ses cara sont attribués
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Copie un fichier dans un autre.
+     *
+     * @param source
+     * @param dest
+     * @throws IOException
+     */
+    private static void copyFile(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+
     /**
      * Lecture de l'équipement.
      */
@@ -74,44 +144,29 @@ public class Main {
             int compteur = 1;
             int tailleEquip = 8;
 
-            // Tire trois nombres aléatoires.
+            // Tire trois nombres aléatoires différents les uns des autres.
             Random random = new Random();
+
             int nb1 = random.nextInt(8);
+            while (nb1 == 0) {
+                nb1 = random.nextInt(8);
+            }
+
             int nb2 = random.nextInt(8);
+            while (nb2 == 0 || nb1 == nb2) {
+                nb2 = random.nextInt(8);
+            }
+
             int nb3 = random.nextInt(8);
 
-            // Sort de la boucle seulement si les trois nombres sont différents.
-            while (true) {
-                if (nb1 == nb2) {
-                    nb2 = random.nextInt(8);
-                }
-                if (nb1 == 0) {
-                    nb2 = random.nextInt(8);
-                }
-                if (nb2 == 0) {
-                    nb2 = random.nextInt(8);
-                }
-                if (nb3 == nb1) {
-                    nb3 = random.nextInt(8);
-                }
-                if (nb3 == nb2) {
-                    nb3 = random.nextInt(8);
-                }
-                if (nb3 == 0) {
-                    nb3 = random.nextInt(8);
-                }
-                if (nb1 != nb2) {
-                    if (nb1 != nb3) {
-                        if (nb1 != 0) {
-                            if (nb2 != 0) {
-                                if (nb3 != 0) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+            while (nb3 == 0 || nb3 == nb1 || nb3 == nb2) {
+                nb3 = random.nextInt(8);
             }
+
+            System.out.println(nb1);
+            System.out.println(nb2);
+            System.out.println(nb3);
+
 
             // Copie du fichier équipement dans le fichier marchand temporaire.
             while ((currentLine = reader.readLine()) != null) {  // Continue tant qu'il y a des lignes.
@@ -160,17 +215,22 @@ public class Main {
         Boolean gameRun = true;
         int var = 0;
 
+        ImageIcon iconic = new ImageIcon("/home/jules/Desktop/PROJET GANDOULF/Ressources/underworld.jpg");
+
 
         String[] introOptions = {"Créer un nouveau personnage", "Charger un personnage pré-existant"};
-        int intro = JOptionPane.showOptionDialog(null, "Que voulez-vous faire ?",
+        int intro = JOptionPane.showOptionDialog(f, "",
                 "Bienvenue dans Projet Gandoulf !", JOptionPane.DEFAULT_OPTION, -1,
-                null, introOptions, introOptions[0]);
+                iconic, introOptions, introOptions[0]);
 
         loop:
         switch (intro) {
             case 0:     // Créer un nouveau personnage.
+
+                ImageIcon character = new ImageIcon("/home/jules/Desktop/PROJET GANDOULF/Ressources/dd_character.jpg");
+
                 String[] classeOptions = {"Barbare", "Sorcier"};
-                int classe = JOptionPane.showOptionDialog(null, "Choisissez une classe.",
+                int classe = JOptionPane.showOptionDialog(f, "Choisissez une classe.",
                         "Bienvenue dans Projet Gandoulf !", JOptionPane.DEFAULT_OPTION, -1,
                         null, classeOptions, classeOptions[0]);
                 switch (classe) {
@@ -227,9 +287,19 @@ public class Main {
                     // Transforme les arraylist en array.
                     String[] optionChoixPerso = listeNomsPersos.toArray(new String[0]);
 
-                    choixPersoMenu = JOptionPane.showOptionDialog(null, "Choisissez un personnage:",
+                    character = new ImageIcon("/home/jules/Desktop/PROJET GANDOULF/Ressources/dd_character.jpg");   // TODO: Image plus petite
+
+                    choixPersoMenu = JOptionPane.showOptionDialog(f, "Choisissez un personnage:",
                             "Personnages", JOptionPane.DEFAULT_OPTION, -1, null, optionChoixPerso,
                             optionChoixPerso[0]);
+
+
+/*
+                    String choiPersoMenu = (String) JOptionPane.showInputDialog(null, "Choisissez un personnage:",
+                            "Personnages", JOptionPane.QUESTION_MESSAGE, null, optionChoixPerso,
+                            optionChoixPerso[0]);
+
+ */
 
                     scanner.close();
                 } catch (IOException e) {
@@ -323,12 +393,82 @@ public class Main {
 
         while (gameRun) {
             // Menu principal du jeu.
+
             String[] menuOptions = {"Combat de monstres", "Arène", "Combat entre joueurs", "Marchand",
                     "Sauvegarder"};
             int menu = JOptionPane.showOptionDialog(null, "\nQue voulez-vous faire ?",
                     joueur.nom + " - " + joueur.classe + " niveau: " + joueur.level,
                     JOptionPane.DEFAULT_OPTION, -1, null, menuOptions,
                     menuOptions[0]);
+
+            System.out.println(joueur.defense);
+            System.out.println(joueur.arme);
+            System.out.println(joueur.arme2);
+            System.out.println(joueur.armure);
+
+            System.out.println("xp actuel:" + joueur.XP);
+
+            Arme arme1 = new Arme(0, "Vide", 0);
+            switch (joueur.arme) {        // Instancie l'arme 1 du joueur.
+                case "Vide":
+                    arme1 = new Arme(0, "Vide", 0);
+                    break;
+                case "Baton":
+                    arme1 = new Arme(5, "Baton", 30);
+                    break;
+                case "Epée rudimentaire":
+                    arme1 = new Arme(10, "Epée rudimentaire", 50);
+                    break;
+                case "Hache cassée":
+                    arme1 = new Arme(12, "Hache cassée", 70);
+                    break;
+                case "Epée en acier":
+                    arme1 = new Arme(50, "Hache cassée", 1000);
+                    break;
+            }
+
+            Arme arme2 = new Arme(0, "Vide", 0);
+            switch (joueur.arme2) {        // Instancie l'arme 2 du joueur.ù
+                case "Vide":
+                    arme2 = new Arme(0, "Vide", 0);
+                    break;
+                case "Baton":
+                    arme2 = new Arme(5, "Baton", 30);
+                    break;
+                case "Epée rudimentaire":
+                    arme2 = new Arme(10, "Epée rudimentaire", 50);
+                    break;
+                case "Hache cassée":
+                    arme2 = new Arme(12, "Hache cassée", 70);
+                    break;
+                case "Epée en acier":
+                    arme2 = new Arme(50, "Hache cassée", 1000);
+                    break;
+            }
+
+            Armure armure = new Armure(0, "Vide", 0);
+            switch (joueur.armure) {
+                case "Vide":
+                    armure = new Armure(0, "Vide", 0);
+                    break;
+                case "Tunique rudimentaire":
+                    armure = new Armure(3, "Tunique rudimentaire", 30);
+                    break;
+                case "Armure en cuir":
+                    armure = new Armure(5, "Armure en cuir", 50);
+                    break;
+                case "Tunique d'aventurier":
+                    armure = new Armure(10, "Armure en cuir", 100);
+                    break;
+                case "Armure en acier":
+                    armure = new Armure(30, "Armure en acier", 1000);
+                    break;
+            }
+
+            System.out.println("attaque arme 1:" + arme1.attaqueArme);
+            System.out.println("attaque arme 2:" + arme2.attaqueArme);
+            System.out.println("armure:" + armure.defenseArme);
+
 
             // Affichage du menu principal du jeu.
             switch (menu) {
@@ -337,74 +477,229 @@ public class Main {
                 case 0:     // Combat de monstre.
 
 
+                    // TODO: Faire pop le monstre
+                    Monstre monstre = new Monstre();
+
+                    int niveauMonstre=1000;
+                    do {
+                        try {
+                            //fichier decrivant les monstres
+                            //faire un tirage aléatoire sur le monstre rencontré
+                            String chemin = "/home/jules/Desktop/PROJET GANDOULF/Ressources/monstres.txt";
+                            FileInputStream file = new FileInputStream(chemin);
+                            Scanner scanner = new Scanner(file);
+                            Random random = new Random();
+                            int nb;
+                            nb = random.nextInt(14);
+                            String line = "";
+                            // ligne du monstre et scinder ses différentes cara qui sont séparées par des points virgules)
+                            int compteur = 0;
+                            //TODO faire une boucle qui fait que si le niveau du monstre est supérieur de 3 niveaux à celui du joueur, alors on relance un tirage aléatoire
+                            while (compteur <= nb) {
+                                line = scanner.nextLine();
+                                compteur++;
+                                System.out.println(line);
+                            }
+                            scanner.close();
+
+                            String[] info = line.split(";");
+                            System.out.println(info);
+                            System.out.println("Attention ! Un " + info[0] + " ! Attention à ses attaques dévastatrices !");
+
+                            monstre = new Monstre(
+                                    info[0],                        // nom
+                                    Integer.parseInt(info[1]),      // PV
+                                    Integer.parseInt(info[2]),      // attaque
+                                    Integer.parseInt(info[3]),      // defense
+                                    Integer.parseInt(info[4]),      // niveau
+                                    Integer.parseInt(info[5]),      // XP
+                                    Integer.parseInt(info[6]),      // PV
+                                    Integer.parseInt(info[7]),      // esquive
+                                    Integer.parseInt(info[8]));     // vitesse
+                            //on appelle le monstre correspondant à la ligne et ses cara sont attribués
+                            niveauMonstre = monstre.niveau;
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    while(niveauMonstre>(joueur.level+3));
+
+
                     System.out.println(joueur.attaque);
                     System.out.println(joueur.classe);
                     System.out.println(joueur.mana);
                     System.out.println(var);
 
+                    int atkArme1 = arme1.attaqueArme;
+                    int atkArme2 = arme2.attaqueArme;
+                    int defArmure = armure.defenseArme;
+                    System.out.println("atkarm1: " + atkArme1);
+
                     // Instanciation du monstre.
-                    Monstre monstre = new Monstre("Zeph", 100, 1, 1, 1, 1, 100, 1, 1);
+                    // Monstre monstre = new Monstre("Zeph", 200, 10, 0, 1, 100, 100, 1, 10, 100);
                     JOptionPane.showMessageDialog(null,
                             "Un " + monstre.nomMonstre + " sauvage apparait !", "Combat", -1);
 
-                    if (joueur.vitesse < monstre.vitesse) { // Détermine qui du joueur ou du monstre va attaquer le premier.
-                        joueur.HP = joueur.HP - (monstre.attaque - joueur.defense);
-                    }
-                    int nbtours = 0;
-                    do {
+                    loop:
+                    while (joueur.HP > 0 || monstre.PVMonstre > 0) {
                         String[] menuCombatdemonstre = {"Attaquer", "Potion", "Lancer un sort"};
                         int combat = JOptionPane.showOptionDialog(null,
                                 "Quelle action souhaitez-vous effectuer ?", joueur.nom + " HP: " + joueur.HP + "/" +
-                                        joueur.HPmax +  "  -  " + monstre.nomMonstre + " HP: " + monstre.PVMonstre,
+                                        joueur.HPmax + "  -  " + monstre.nomMonstre + " HP: " + monstre.PVMonstre,
                                 JOptionPane.DEFAULT_OPTION, -1, null, menuCombatdemonstre,
                                 menuCombatdemonstre[0]);
                         switch (combat) {
+
                             case 0:     // Attaquer.
-                                monstre.PVMonstre = monstre.PVMonstre - (joueur.attaque - monstre.defense);
-                                if (monstre.PVMonstre < 0) {
-                                    monstre.PVMonstre = 0;
-                                    System.out.println("Bravo ! Vous avez triomphé de votre adversaire !");
+
+                                if (joueur.vitesse > monstre.vitesse) {     // Combat si le joueur est plus rapide.
+
+                                    // Attaque du joueur.
+                                    if (Objects.equals(joueur.classe, "Barbare")) {
+                                        double nb;
+                                        nb = Math.random();
+                                        nb = nb * 100;
+                                        System.out.println("nb=" + nb);
+                                        if (nb < joueur.critique) {
+                                            monstre.PVMonstre = monstre.PVMonstre - (joueur.attaque + atkArme1 + atkArme2 - monstre.defense) * 2;
+
+                                            JOptionPane.showMessageDialog(null, "Coup critique ! " +
+                                                    joueur.nom + " a infligé " + (joueur.attaque + atkArme1 + atkArme2 - monstre.defense) * 2 + " dégâts au " + monstre.nomMonstre);
+                                        } else {
+                                            monstre.PVMonstre = monstre.PVMonstre - (joueur.attaque + atkArme1 + atkArme2 - monstre.defense);
+
+                                            JOptionPane.showMessageDialog(null, joueur.nom + " a infligé " +
+                                                    (joueur.attaque + atkArme1 + atkArme2 - monstre.defense) + " dégâts au " + monstre.nomMonstre);
+                                        }
+                                    } else {
+                                        monstre.PVMonstre = monstre.PVMonstre - (joueur.attaque + atkArme1 - monstre.defense);
+
+                                        JOptionPane.showMessageDialog(null, joueur.nom + " a infligé " +
+                                                (joueur.attaque + atkArme1 + atkArme2 - monstre.defense) + " dégâts au " + monstre.nomMonstre);
+                                    }
+
+                                    // Condition de victoire et brise la boucle.
+                                    if (monstre.PVMonstre <= 0) {
+                                        JOptionPane.showMessageDialog(f, "Le " + monstre.nomMonstre + " sauvage à été battu !");
+                                        joueur.setOr(joueur.or + monstre.or);
+                                        joueur.setXP(joueur.XP + monstre.XP);
+                                        JOptionPane.showMessageDialog(f, "Vous avez gagné " + monstre.or +
+                                                " pièces d'or et " + monstre.XP + " points d'expérience.");
+                                        joueur.checkXP();
+                                        break loop;
+                                    }
+
+                                    // Attaque du monstre.
+                                    double nb;
+                                    nb = Math.random();
+                                    nb = nb * 100;
+                                    if (nb < joueur.esquive) {
+                                        JOptionPane.showMessageDialog(null, "Le " +
+                                                monstre.nomMonstre + " sauvage tente d'attaquer, mais " + joueur.nom +
+                                                " a esquivé le coup !");
+                                    } else {
+                                        int atkMonstre = monstre.attaque - joueur.defense - armure.defenseArme;
+
+                                        if (atkMonstre <= 0) {  // Empêche d'avoir des dégâts négatifs.
+                                            atkMonstre = 0;
+                                        }
+                                        joueur.HP -= atkMonstre;
+                                        JOptionPane.showMessageDialog(null,
+                                                "Le " + monstre.nomMonstre + " sauvage attaque, il inflige " +
+                                                        atkMonstre + " points de dégats");
+                                    }
+                                    if (joueur.HP <= 0) {
+                                        JOptionPane.showMessageDialog(null, "Vous êtes mort.");
+                                        break loop;
+                                    }
                                 }
-                                nbtours += 1;
+
+                                // TODO: joueur moins rapide que monstre.
                                 break;
+
                             case 1:     // Potion.
                                 if (joueur.nbPotions > 0) {
                                     Potion potion = new Potion(1, 1, 1);
-                                    Potion.getPotion(joueur);
+                                    if (joueur.level < 10) {    // si niveau joueur <10, permet d'acheter une potion niveau 1.
+                                        potion = new Potion(1, 50, 100);
+                                    }
+                                    if (joueur.level > 10 && joueur.level < 20) {
+                                        potion = new Potion(2, 100, 150);
+                                    }
+                                    if (joueur.level > 20 && joueur.level < 30) {
+                                        potion = new Potion(3, 150, 250);
+                                    }
+                                    if (joueur.level > 30 && joueur.level < 40) {
+                                        potion = new Potion(4, 200, 350);
+                                    }
+                                    if (joueur.level > 40 && joueur.level < 50) {
+                                        potion = new Potion(5, 250, 400);
+                                    }
+                                    if (joueur.level > 50 && joueur.level < 60) {
+                                        potion = new Potion(6, 300, 550);
+                                    }
+                                    if (joueur.level > 60 && joueur.level < 70) {
+                                        potion = new Potion(7, 350, 650);
+                                    }
+                                    if (joueur.level > 70 && joueur.level < 80) {
+                                        potion = new Potion(8, 400, 750);
+                                    }
+                                    if (joueur.level > 80 && joueur.level < 90) {
+                                        potion = new Potion(9, 450, 850);
+                                    }
+                                    if (joueur.level > 90 && joueur.level < 100) {
+                                        potion = new Potion(10, 500, 1000);
+                                    }
                                     joueur.HP = joueur.HP + potion.soinPV;
+                                    System.out.println("Soin: " + potion.soinPV);
+                                    if (joueur.HP > joueur.HPmax) {
+                                        joueur.HP = joueur.HPmax;
+                                    }
                                     joueur.nbPotions -= 1;
+                                    JOptionPane.showMessageDialog(null, joueur.nom + " utilise une potion de soin.");
+
+                                    // Attaque du monstre.
+                                    double nb;
+                                    nb = Math.random();
+                                    nb = nb * 100;
+                                    if (nb < joueur.esquive) {
+                                        JOptionPane.showMessageDialog(null, "Le " +
+                                                monstre.nomMonstre + " sauvage tente d'attaquer, mais " + joueur.nom +
+                                                " a esquivé le coup !");
+                                    } else {
+                                        int atkMonstre = monstre.attaque - joueur.defense - armure.defenseArme;
+
+                                        if (atkMonstre <= 0) {  // Empêche d'avoir des dégâts négatifs.
+                                            atkMonstre = 0;
+                                        }
+                                        joueur.HP -= atkMonstre;
+                                        JOptionPane.showMessageDialog(null,
+                                                "Le " + monstre.nomMonstre + " sauvage attaque, il inflige " +
+                                                        atkMonstre + " points de dégats");
+                                    }
+                                    if (joueur.HP <= 0) {
+                                        JOptionPane.showMessageDialog(null, "Vous êtes mort.");
+                                        break loop;
+                                    }
                                 } else {
-                                    System.out.println("Vous n'avez pas de potions.");
+                                    JOptionPane.showMessageDialog(null, "Vous n'avez pas de potions.");
                                 }
-                                nbtours += 1;
                                 break;
                             case 2:     // Lancer un sort.
-                                if (Objects.equals(joueur.classe,"Sorcier")) {       // TODO: instancier joueur.mana
-                                    if (nbtours == 0) {
-                                        monstre.PVMonstre = monstre.PVMonstre - (15 - monstre.defense);
-                                        joueur.mana -= 10;
-                                    } else {
-                                        if (joueur.mana >= 5) {
-                                            monstre.PVMonstre = monstre.PVMonstre - (5 - monstre.defense);
-                                            joueur.mana -= 5;
-                                        } else {
-                                            monstre.PVMonstre = (int) (monstre.PVMonstre - ((5 * 0.90) - monstre.defense));
-                                        }
-                                    }
-                                    nbtours += 1;
+                                if (Objects.equals(joueur.classe, "Sorcier")) {      // TODO: Sorts du sorcier
+
                                     break;
                                 } else {
-                                    System.out.println("Pas de sort disponible.");
+                                    JOptionPane.showMessageDialog(null, "Pas de sort disponibles.");
                                 }
                                 break;
                         }
                     }
-                    while (joueur.HP > 0 && monstre.PVMonstre > 0);
 
-
+                    joueur.soinHP();
                     resetMarchand();    // A placer après le combat pour avoir un loot différent chez le marchand après chaque combat.
                     break;
-
 
                 case 1:     // Arène.
 
@@ -440,7 +735,10 @@ public class Main {
 
                             // Lecture fichier et affichage dans marchand
 
-                            int choixEquiptMenu;
+                            int compteur = 1;
+                            Equipement item1 = new Equipement();
+                            Equipement item2 = new Equipement();
+                            Equipement item3 = new Equipement();
 
                             try {
                                 // Fichier d'entrée.
@@ -457,47 +755,97 @@ public class Main {
                                 // Renvoie true s'il y a une autre ligne à lire.
                                 while (scanner.hasNextLine()) {
 
-                                    // Prend une ligne du fichier texte à la fois et stocke la ligne dans "persoDispo".
+                                    // Prend une ligne du fichier texte à la fois et stocke la ligne dans "equiptDispo".
                                     String equiptDispo = scanner.nextLine();
 
-                                    // Sépare les données de chaque perso et les stocke dans une liste.
+                                    // Sépare les données de chaque equipement et les stocke dans une liste.
                                     equiptSplit = equiptDispo.split(";");
 
-
                                     if (Objects.equals(equiptSplit[0], "armure")) {
-                                        // Ajoute le nom, la classe et le niveau du personnage dans l'arraylist "listeNomPersos".
+                                        // Ajoute les stats de l'equipement dans l'arraylist "listeNomEquipt".
                                         listeNomsEquipt.add(equiptSplit[1] + ", DEF +" + equiptSplit[2] + ", "
                                                 + equiptSplit[3] + " pièces d'or.");
+                                        switch (compteur) {
+                                            case 1:
+                                                item1 = new Armure(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                                break;
+                                            case 2:
+                                                item2 = new Armure(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                                break;
+                                            case 3:
+                                                item3 = new Armure(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                                break;
+                                        }
                                     } else {
                                         listeNomsEquipt.add(equiptSplit[1] + ", " + "ATK +" + equiptSplit[2] + ", "
                                                 + equiptSplit[3] + " pièces d'or");
+                                        switch (compteur) {
+                                            case 1:
+                                                item1 = new Arme(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                                break;
+                                            case 2:
+                                                item2 = new Arme(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                                break;
+                                            case 3:
+                                                item3 = new Arme(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
+                                                break;
+                                        }
                                     }
+                                    compteur += 1;
                                 }
                                 scanner.close();
+
+
+                                String a = item1.typeEquipement;
+                                String b = item1.nom;
+                                int c = item1.attaqueArme;
+                                int d = item1.prix;
+
+                                System.out.println("type:" + a + "\tnom:" + b + "\tattaque:" + c + "\tprix:" + d);
+
+                                a = item2.typeEquipement;
+                                b = item2.nom;
+                                c = item2.attaqueArme;
+                                d = item2.prix;
+
+                                System.out.println("type:" + a + "\tnom:" + b + "\tattaque:" + c + "\tprix:" + d);
+
 
                                 // Transforme les arraylist en array.
                                 String[] optionEquiptPerso = listeNomsEquipt.toArray(new String[0]);
 
-                                choixEquiptMenu = JOptionPane.showOptionDialog(null,
+                                int choixEquiptMenu = JOptionPane.showOptionDialog(null,
                                         "Vous avez " + joueur.or + " pièces d'or."
                                                 + "\n\nQue voulez-vous acheter ?",
                                         "Marchand", JOptionPane.DEFAULT_OPTION, -1,
                                         null, optionEquiptPerso, optionEquiptPerso[0]);
 
-                                System.out.println(equiptSplit[0]);
-
                                 switch (choixEquiptMenu) {
-                                    default:     // Permet d'acheter une arme choisie..
-                                        if(Objects.equals(equiptSplit[0], "arme")){
-                                            Arme arme = new Arme(Integer.parseInt(equiptSplit[2]), equiptSplit[1], Integer.parseInt(equiptSplit[3]));
-                                            arme.acheterArme(joueur);
+                                    case 0:
+                                        if (Objects.equals(item1.typeEquipement, "arme")) {
+                                            item1.acheterArme(joueur);
+                                        } else if (Objects.equals(item1.typeEquipement, "armure")) {
+                                            item1.acheterArmure(joueur);
+                                        }
+                                        break;
+                                    case 1:
+                                        if (Objects.equals(item2.typeEquipement, "arme")) {
+                                            item2.acheterArme(joueur);
+                                        } else if (Objects.equals(item2.typeEquipement, "armure")) {
+                                            item2.acheterArmure(joueur);
+                                        }
+                                        break;
+                                    case 2:
+                                        if (Objects.equals(item3.typeEquipement, "arme")) {
+                                            item3.acheterArme(joueur);
+                                        } else if (Objects.equals(item3.typeEquipement, "armure")) {
+                                            item3.acheterArmure(joueur);
                                         }
                                         break;
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            // TODO: Equipement.acheterEquipement();
 
                             break;
 
@@ -541,7 +889,8 @@ public class Main {
                         writer.close();
                         reader.close();
 
-
+                        copyFile(tempFilePerso, inputFile);
+                        JOptionPane.showMessageDialog(null, "Partie Sauvegardée");
 
 
                     } catch (IOException e) {
@@ -558,6 +907,7 @@ public class Main {
      * Méthode main.
      */
     public static void main(String[] args) {
+
         gameRun();
     }
 }
