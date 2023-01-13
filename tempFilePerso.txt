@@ -1,2 +1,2 @@
-qsd;Sorcier;0;0;100;50;50;100;5;0;1;10;vide;vide;0;1;/////////
-aze;Barbare;0;0;150;150;10;0;10;0.5;10;vide;vide;vide;10000;1
+Gandalf;Sorcier;1;0;100;100;50;50;5;0;1;10;vide;vide;10000000;10;/////////
+Ralof;Barbare;9;1245;310;310;10;0;5;75.5;1000005;Epée rudimentaire;Epée rudimentaire;Tunique d'aventurier;76408;3
