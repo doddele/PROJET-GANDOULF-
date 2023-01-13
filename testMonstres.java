@@ -9,7 +9,7 @@ public class testMonstres {
 
         //List listMonstres = Arrays.asList(listMonstres);
 
-        Monstres Valstrax = new Monstres("Valstrax", 100, 120, 150, 200, 850, 12, 52, 48); //appelle le contenu de la classe Monstre et utilise ses données
+        Monstres Valstrax = new Monstres("Valstrax", 100, 120, 150, 200, 850, 12, 52); //appelle le contenu de la classe Monstre et utilise ses données
 
 
         try {
@@ -38,7 +38,7 @@ public class testMonstres {
             System.out.println(info);
             System.out.println("Attention ! Un " + info[0] + " ! Attention à ses attaques dévastatrices !");
 
-            Monstres monstre = new Monstres(info[0], Integer.parseInt(info[1]), Integer.parseInt(info[2]), Integer.parseInt(info[3]), Integer.parseInt(info[4]), Integer.parseInt(info[5]), Integer.parseInt(info[6]), Integer.parseInt(info[7]), Integer.parseInt(info[8]));
+            Monstres monstre = new Monstres(info[0], Integer.parseInt(info[1]), Integer.parseInt(info[2]), Integer.parseInt(info[3]), Integer.parseInt(info[4]), Integer.parseInt(info[5]), Integer.parseInt(info[6]), Integer.parseInt(info[7]));
             //on appelle le monstre correspondant à la ligne et ses cara sont attribués
 
 
@@ -46,12 +46,12 @@ public class testMonstres {
 
             System.out.println("Nom du monstre : " + monstre.nomMonstre);
             System.out.println("Points de vie du monstre : " + monstre.PVMonstre);
-            System.out.println("Attaque du monstre : " + monstre.Attaque);
-            System.out.println("Défense du monstre : " + monstre.Defense);
-            System.out.println("Niveau du monstre : " + monstre.Niveau);
-            System.out.println("Vitesse du monstre : " + monstre.Vitesse);
-            System.out.println("Points d'XP rapportés par le monstre : " + monstre.XPdonne);
-            System.out.println("Esquive du monstre: " + monstre.Esquive);
+            System.out.println("Attaque du monstre : " + monstre.AttaqueMonstre);
+            System.out.println("Défense du monstre : " + monstre.DefenseMonstre);
+            System.out.println("Niveau du monstre : " + monstre.NiveauMonstre);
+            System.out.println("Vitesse du monstre : " + monstre.VitesseMonstre);
+            System.out.println("Points d'XP rapportés par le monstre : " + monstre.XPdonneMonstre);
+            System.out.println("Esquive du monstre: " + monstre.EsquiveMonstre);
 
 
         } catch (IOException e) {
@@ -59,7 +59,15 @@ public class testMonstres {
         }
 
     }
-    static void combatMonstres(String[]args){ //méthode qui permet d'affronter les monstres un à un
 
-    }
 }
+
+
+
+
+
+
+
+
+
+

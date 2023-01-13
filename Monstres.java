@@ -1,25 +1,23 @@
 public class Monstres {
             public String nomMonstre;
             public int PVMonstre;
-            public int Attaque;
-            public int Defense;
-            public int Niveau;
-            public int XPdonne;
-            public int PV;
-            public int Esquive;
-            public int Vitesse;
+            public int AttaqueMonstre;
+            public int DefenseMonstre;
+            public int NiveauMonstre;
+            public int XPdonneMonstre;
+            public int EsquiveMonstre;
+            public int VitesseMonstre;
 
 
-            public Monstres ( String nomMonstre,int PVMonstre, int Attaque, int Defense, int Niveau, int XPdonne, int PV, int Esquive, int Vitesse){
+            public Monstres ( String nomMonstre,int PVMonstre, int AttaqueMonstre, int DefenseMonstre, int NiveauMonstre, int XPdonneMonstre, int EsquiveMonstre, int VitesseMonstre){
                 this.nomMonstre = nomMonstre;
                 this.PVMonstre = PVMonstre;
-                this.Attaque = Attaque;
-                this.Defense = Defense;
-                this.Niveau = Niveau;
-                this.XPdonne = XPdonne;
-                this.PV = PV;
-                this.Esquive = Esquive;
-                this.Vitesse = Vitesse;
+                this.AttaqueMonstre = AttaqueMonstre;
+                this.DefenseMonstre = DefenseMonstre;
+                this.NiveauMonstre = NiveauMonstre;
+                this.XPdonneMonstre = XPdonneMonstre;
+                this.EsquiveMonstre = EsquiveMonstre;
+                this.VitesseMonstre = VitesseMonstre;
 
             }
 
