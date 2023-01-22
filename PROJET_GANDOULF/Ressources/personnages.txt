@@ -1,0 +1,3 @@
+Ralof;Barbare;1;0;150;150;10;0;10;0.5;10;vide;vide;vide;0;1
+Gandalf;Sorcier;54;81945;1300;1300;651776;651776;5;0;1.0;40;Epée rudimentaire;vide;264;0;/////////
+Valeera;Voleur;23;10890;330;330;10;0;18.0;21.5;125;Epée en acier;Tunique d'aventurier;191;1

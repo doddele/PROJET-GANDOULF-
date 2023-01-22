@@ -1,0 +1,3 @@
+arme;Hache cassée;12;70;
+armure;Tunique d'aventurier;10;100;
+arme;Epée en acier;50;1000;
