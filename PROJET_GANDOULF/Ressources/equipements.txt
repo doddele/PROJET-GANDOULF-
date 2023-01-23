@@ -1,8 +1,0 @@
-arme;Baton;5;30;
-armure;Tunique rudimentaire;3;30;
-arme;Epée rudimentaire;10;50;
-armure;Armure en cuir;5;50;
-arme;Hache cassée;12;70;
-armure;Tunique d'aventurier;10;100;
-arme;Epée en acier;50;1000;
-armure;Armure en acier;30;1000;
